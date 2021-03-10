@@ -1,0 +1,12 @@
+using System;
+
+class Program
+{
+	static void Main()
+	{
+		string name = Console.ReadLine();
+		Console.WriteLine("Welcome {0}!",name);
+		Console.WriteLine("Goodbye {0}!",name);
+		Console.ReadKey();
+	}
+}
