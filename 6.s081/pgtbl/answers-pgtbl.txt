@@ -1,0 +1,9 @@
+1. In general, any system call which has to trap into the kernel for fields will be made faster 
+using shared page. In particular, the calls exit, wait, getpid, open, dup, pipe, fstat and stat 
+will be made faster. The underlying common point is that these calls all have to trap to get information, 
+so just share the information between the kernel and user space will indeed speed these calls up.
+
+2. page 0: text & data
+page 2: user stack
+No
+bytes from ELF file

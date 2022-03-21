@@ -1,0 +1,5 @@
+When thread 1 and thread 2 put values to an entry simultaneously.
+Thread 1 has got the desired pointer but hasn't write new value to its next feild.
+Then a context switch occurs and thread 2 gets the exactly same pointer and writes an address
+to its next field. After that the context is switched back and thread 1 write another address to
+the field. Therefore the address written by thread 2 becomes a wild pointer, resulting in a miss.

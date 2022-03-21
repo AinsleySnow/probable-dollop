@@ -1,0 +1,16 @@
+1. Arguments to functions are stored in register a0-a7. 13 is stored in register a2.
+
+2. There is no explict call to f in main, since the complier has optimized the call and just make 
+its return value 12 to be the argument of printf(), omitting the call to f.
+The call to g has been inlined. The inlined call locates in 0x14.
+
+3. 0x630, obviously.
+
+4. 0x38.
+
+5. Output: He110 World
+Set i to 0x726c6400 if the RISC-V were instead big-endian.
+No need to change 57616.
+
+6. The value in register a2. For the processer will load the value in a2 since it believes that 
+the actually inexisted argument #3 has been stored in it.
