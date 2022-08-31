@@ -1,3 +1,6 @@
+from operator import indexOf, le
+
+
 class node:
     def __init__(self) -> None:
         self.value = None
@@ -75,6 +78,109 @@ def splay_node(t: splay, x: node) -> None:
                 # zig-zag 的情况
                 left_rotate(t, x.parent)
                 right_rotate(t, x.parent)
+
+
+def max_node(x: node) -> node:
+    current = x
+    while current.right:
+        current = current.right
+    return current
+
+def min_node(x: node) -> node:
+    current = x
+    while current.left:
+        current = current.left
+    return current
+
+
+def link_right(right: splay, x: node) -> None:
+    x.left = None
+    if not right.root:
+        right.root = x
+        return
+    minimum = min_node(right)
+    x.parent = minimum
+    minimum.left = x
+    
+def link_left(left: splay, x: node) -> None:
+    x.right = None
+    if not left.root:
+        left.root = x
+        return
+    maximum = max_node(left)
+    x.parent = maximum
+    maximum.right = x
+
+
+def assemble(left: splay, middle: splay, right: splay) -> None:
+    a = middle.root.left
+    b = middle.root.right
+
+    if left.root:
+        middle.root.left = left.root
+        left.root.parent = middle.root
+        left_right = max_node(left.root)
+        left_right.right = a
+        if a:
+            a.parent = left_right
+    
+    if right.root:
+        middle.root.right = right.root
+        right.root.parent = middle.root
+        right_left = min_node(right.root)
+        right_left.left = b
+        if b:
+            b.parent = right_left
+
+
+def top_down_splay(t: splay, i: int) -> None:
+    left = splay()
+    right = splay()
+
+    while t.root.value != i:
+        if t.root.value > i:
+            if t.root.left.value == i:
+                temp = t.root.left
+                temp.parent = None
+                link_right(right, t.root)
+                t.root = temp
+
+            elif t.root.left.value > i:
+                temp = t.root.left.left
+                temp.parent = None
+                right_rotate(t, t.root)
+                link_right(right, t.root)
+                t.root = temp
+
+            else:
+                temp = t.root.left.right
+                temp.parent = None
+                link_right(right, t.root)
+                link_left(left, t.root)
+                t.root = temp
+
+        elif t.root.value < i:
+            if t.root.right.value == i:
+                temp = t.root.right
+                temp.parent = None
+                link_left(left, t.root)
+                t.root = temp
+            
+            elif t.root.right.value > i:
+                temp = t.root.right.right
+                temp.parent = None
+                left_rotate(t, t.root)
+                link_left(left, t.root)
+                t.root = temp
+            
+            else:
+                temp = t.root.right.left
+                temp.parent = None
+                link_left(left, t.root)
+                link_right(right, t.root)
+                t.root = temp
+
+    assemble(left, t, right)
 
 
 def insert(t: splay, v: int) -> None:
@@ -171,8 +277,16 @@ if __name__ == '__main__':
     t = splay()
     for n in nums:
         insert(t, n)
+
+    print('Resulting tree of normal splaying:')
     inorder_walk(t.root)
+    
+    top_down_splay(t, 5)
+    print('Resulting tree of top-down splaying:')
+    inorder_walk(t.root)
+
     n9 = search(t, 9)
     delete(t, n9)
     print()
+    print('Resulting tree after 9 is deleted:')
     inorder_walk(t.root)
